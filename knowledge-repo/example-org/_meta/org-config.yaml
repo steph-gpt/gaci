@@ -1,0 +1,39 @@
+# GACI Organisation Configuration
+# =================================
+# Replace 'example-org' with your organisation name in .env (ORG_NAME)
+# This file defines org-level settings for the GACI deployment
+
+org_name: example-org
+org_display_name: Example Organisation
+gaci_version: "1.0"
+
+# Jira project key for this org
+jira_project_key: PROD
+
+# Default SME assignments by department
+# These are fallback owners if no specific SME is declared on a Jira ticket
+default_smes:
+  customer-service: cs-lead@example-org.com
+  product-marketing: pmm-lead@example-org.com
+  incident-management: incident-lead@example-org.com
+  soc-operations: soc-lead@example-org.com
+  product: product-lead@example-org.com
+
+# Escalation configuration
+escalation:
+  first_escalation_hours: 48
+  second_escalation_hours: 96
+  second_escalation_notify: department-head@example-org.com
+
+# Audience permissions
+# Departments listed here can query content in the vector store
+# but cannot trigger approval tasks
+read_only_audiences:
+  - sales
+  - legal
+  - finance
+
+# Vector store settings for this org
+vector_store:
+  collection_prefix: example-org
+  embedding_model: text-embedding-3-small

@@ -1,0 +1,27 @@
+# GACI Product Registry — SentinelOne
+# =====================================
+# Mirrors the Jira registry fields for this product.
+# Updated automatically when the orchestrator processes a trigger.
+# Do not edit manually — this file is agent-maintained.
+
+product: sentinelone
+product_display_name: SentinelOne EDR Platform
+last_updated: "2026-03-22T14:30:00Z"
+last_updated_by: orchestrator-agent-v1.0
+
+features:
+  - jira_id: PROD-1234
+    feature_name: SentinelOne v8 Upgrade
+    product_status: Active
+    content_scope: [CS, Incident]
+    last_trigger: "QA Ready"
+    last_triggered_at: "2026-03-22T14:00:00Z"
+
+  - jira_id: PROD-1180
+    feature_name: SentinelOne v7 Deep Visibility Module
+    product_status: Deprecated
+    content_scope: [CS, Incident]
+    deprecation_reason: Replaced by v8 unified visibility layer
+    successor_feature: PROD-1234
+    last_trigger: "Deprecated"
+    last_triggered_at: "2026-03-15T09:00:00Z"

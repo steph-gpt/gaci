@@ -1,0 +1,83 @@
+{
+  "_comment": "GACI Product/Feature Registry Schema — maps to required Jira Epic fields",
+  "_version": "1.0",
+  "_reference": "GACI Whitepaper v1.2, Section 2.1",
+
+  "registry_fields": {
+    "product_status": {
+      "jira_field": "customfield_10001",
+      "type": "select",
+      "required": true,
+      "owner": "Product Owner",
+      "values": ["Active", "Beta", "Deprecated", "Sunset"],
+      "description": "Current lifecycle state of the product or feature. Required on epic closure.",
+      "gaci_behaviour": {
+        "Active": "Content generation trigger on status change to QA Ready or GA",
+        "Beta": "Content generation trigger — drafts flagged as Beta in frontmatter",
+        "Deprecated": "Spawns content lifecycle review task — no new content generated",
+        "Sunset": "Spawns archive or redirect task depending on successor_feature"
+      }
+    },
+    "content_scope": {
+      "jira_field": "customfield_10002",
+      "type": "multi-select",
+      "required": true,
+      "owner": "Product Owner",
+      "values": ["CS", "PMM", "Incident", "Release Notes", "None"],
+      "description": "Which content types should be generated for this feature. GACI spawns only the declared agents.",
+      "gaci_behaviour": "Orchestrator reads this field to determine which sub-agents to spawn. None = no content pipeline triggered."
+    },
+    "deprecation_reason": {
+      "jira_field": "customfield_10003",
+      "type": "text",
+      "required": "when product_status = Deprecated or Sunset",
+      "owner": "Product Owner",
+      "description": "Free text explanation of why the feature is being deprecated or sunset."
+    },
+    "successor_feature": {
+      "jira_field": "customfield_10004",
+      "type": "jira_link",
+      "required": false,
+      "owner": "Product Owner",
+      "description": "Link to the replacement feature epic. If blank when status = Sunset, GACI treats all associated content as archive (no redirect).",
+      "gaci_behaviour": {
+        "populated": "Repository content moves to Redirected state — queries return successor content with migration note",
+        "blank": "Repository content moves to Archived state — suppressed from retrieval, retained for audit"
+      }
+    },
+    "sunset_date": {
+      "jira_field": "customfield_10005",
+      "type": "date",
+      "required": "when product_status = Sunset",
+      "owner": "Product Owner",
+      "description": "Date the feature is fully retired. GACI uses this to schedule archive operations."
+    }
+  },
+
+  "trigger_events": {
+    "content_generation": [
+      "QA Ready",
+      "GA",
+      "Release Notes Published"
+    ],
+    "lifecycle_review": [
+      "Deprecated",
+      "Sunset"
+    ],
+    "manual_override": "Slash command from Product Owner or authorised team member"
+  },
+
+  "content_scope_to_agent_mapping": {
+    "CS": "cs_documentation",
+    "PMM": "pmm_enablement",
+    "Incident": "incident_management",
+    "Release Notes": "release_notes"
+  },
+
+  "document_types_by_agent": {
+    "cs_documentation": ["support-guide", "troubleshooting-flow", "faq-delta"],
+    "pmm_enablement": ["battlecard", "pitch-deck-update", "competitive-delta"],
+    "incident_management": ["runbook", "sop-delta", "alert-threshold-update"],
+    "release_notes": ["customer-release-note", "internal-changelog"]
+  }
+}
